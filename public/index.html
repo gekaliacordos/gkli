@@ -10,13 +10,18 @@
 </head>
 <body>
   <main class="layout">
-    <aside class="brand" aria-label="GKLI NewCore">
+    <header class="brand">
       <div class="brand-copy">
-        <span class="wordmark">GKLI</span>
-        <p>Cobrança inteligente</p>
+        <img src="/assets/brand/gkli-assinatura.jpg" alt="GKLI — Cobrança inteligente" width="724" height="280">
+        <span class="product">NewCore</span>
       </div>
-      <span class="product">NewCore</span>
-    </aside>
+      <form id="logout" class="logout" hidden>
+        <button type="submit" class="secondary">Sair</button>
+      </form>
+    </header>
+    <div class="brand-visual" aria-hidden="true">
+      <img src="/assets/brand/condominio-brandbook.jpg" alt="" width="680" height="396" fetchpriority="high">
+    </div>
     <section class="access" aria-labelledby="title">
       <div class="panel">
         <h1 id="title">Acesse sua conta</h1>
@@ -48,9 +53,6 @@
           </div>
           <button type="submit">Salvar nova senha</button>
           <button class="text-button" type="button" data-view="recover">Solicitar outro link</button>
-        </form>
-        <form id="logout" class="logout" hidden>
-          <button type="submit">Sair</button>
         </form>
         <section id="home" aria-label="Módulos disponíveis" hidden>
           <div id="resource-cards" class="module-grid"></div>

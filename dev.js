@@ -4,6 +4,10 @@ import auth from './api/auth.js';
 
 const assets = new Map([
   ['/', ['index.html', 'text/html']],
+  ['/assets/brand/gkli-assinatura.jpg', ['assets/brand/gkli-assinatura.jpg', 'image/jpeg']],
+  ['/assets/brand/condominio-brandbook.jpg', ['assets/brand/condominio-brandbook.jpg', 'image/jpeg']],
+  ['/assets/brand/montserrat.woff2', ['assets/brand/montserrat.woff2', 'font/woff2']],
+  ['/assets/brand/nunito.woff2', ['assets/brand/nunito.woff2', 'font/woff2']],
   ['/styles.css', ['styles.css', 'text/css']],
   ['/app.js', ['app.js', 'text/javascript']],
   ['/core.js', ['core.js', 'text/javascript']],
@@ -19,6 +23,6 @@ createServer(async (req, res) => {
     return;
   }
   const [file, type] = asset;
-  res.writeHead(200, { 'Content-Type': `${type}; charset=utf-8`, 'Referrer-Policy': 'no-referrer' });
+  res.writeHead(200, { 'Content-Type': type.startsWith('text/') ? `${type}; charset=utf-8` : type, 'Referrer-Policy': 'no-referrer' });
   res.end(await readFile(new URL(`./public/${file}`, import.meta.url)));
 }).listen(3000, 'localhost', () => console.log('http://localhost:3000'));
