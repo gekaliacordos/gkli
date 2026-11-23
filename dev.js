@@ -5,7 +5,6 @@ import auth from './api/auth.js';
 const assets = new Map([
   ['/', ['index.html', 'text/html']],
   ['/assets/brand/gkli-assinatura.jpg', ['assets/brand/gkli-assinatura.jpg', 'image/jpeg']],
-  ['/assets/brand/condominio-brandbook.jpg', ['assets/brand/condominio-brandbook.jpg', 'image/jpeg']],
   ['/assets/brand/montserrat.woff2', ['assets/brand/montserrat.woff2', 'font/woff2']],
   ['/assets/brand/nunito.woff2', ['assets/brand/nunito.woff2', 'font/woff2']],
   ['/styles.css', ['styles.css', 'text/css']],
