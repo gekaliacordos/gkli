@@ -9,8 +9,9 @@ const home = document.querySelector('#home');
 const corePanel = document.querySelector('#core');
 const operationPanel = document.querySelector('#operation');
 const operationViews = ['cadastros', 'inbox', 'acordos'];
-const homeViews = [...operationViews, 'relatorios'];
+const homeViews = [...operationViews, 'flows', 'relatorios'];
 const settingsButton = document.querySelector('#global-settings');
+const flow = document.querySelector('#flow');
 const reports = document.querySelector('#reports');
 const reportStatus = document.querySelector('#report-status');
 const reportMetrics = document.querySelector('#report-metrics');
@@ -31,6 +32,7 @@ const views = {
   cadastros: ['Cadastros', 'Carteira fictícia de homologação.'],
   inbox: ['Inbox (Cobranças)', 'Carteira fictícia de homologação.'],
   acordos: ['Acordos', 'Carteira fictícia de homologação.'],
+  flows: ['Flow', 'Mensageria de cobrança.'],
   relatorios: ['Relatórios', 'Resumo das carteiras fictícias disponíveis.'],
   core: ['Configurações globais', 'Usuários, equipes e permissões.'],
 };
@@ -47,6 +49,7 @@ function show(view, email) {
   settingsButton.hidden = !signedIn || !allowed.has('core');
   if (view === 'core') settingsButton.setAttribute('aria-current', 'true');
   else settingsButton.removeAttribute('aria-current');
+  flow.hidden = view !== 'flows';
   reports.hidden = view !== 'relatorios';
   if (reports.hidden) reportRequest?.abort();
   operationPanel.hidden = !operationViews.includes(view);

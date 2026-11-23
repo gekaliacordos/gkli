@@ -171,6 +171,8 @@ button.text-button:hover { background: var(--blue-light); }
 
 .module-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr)); gap: 1rem; }
 .module-card, .core-card { background: var(--surface); border: 1px solid var(--surface-border); border-radius: .85rem; }
+#resource-cards { grid-template-columns: repeat(auto-fit, minmax(min(100%, 12.5rem), 1fr)); }
+.flow-status { margin-top: 1rem; }
 .module-card { display: grid; align-content: start; text-align: left; color: var(--heading); padding: 1.15rem; }
 .module-card:hover { background: var(--blue-light); border-color: var(--wave-blue); }
 .module-card strong { font-family: var(--font-heading); }
