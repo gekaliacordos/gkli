@@ -9,6 +9,13 @@ const home = document.querySelector('#home');
 const corePanel = document.querySelector('#core');
 const operationPanel = document.querySelector('#operation');
 const operationViews = ['cadastros', 'inbox', 'acordos'];
+const homeViews = [...operationViews, 'relatorios'];
+const settingsButton = document.querySelector('#global-settings');
+const reports = document.querySelector('#reports');
+const reportStatus = document.querySelector('#report-status');
+const reportMetrics = document.querySelector('#report-metrics');
+const money = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
+let reportRequest;
 const shell = document.querySelector('.layout');
 const query = new URLSearchParams(location.search);
 const recoveryCode = query.get('code');
@@ -22,20 +29,26 @@ const views = {
   reset: ['Definir nova senha', 'Use pelo menos 12 caracteres.'],
   logout: ['Início', 'Módulos disponíveis para a sua conta.'],
   cadastros: ['Cadastros', 'Carteira fictícia de homologação.'],
-  inbox: ['Inbox operacional', 'Carteira fictícia de homologação.'],
+  inbox: ['Inbox (Cobranças)', 'Carteira fictícia de homologação.'],
   acordos: ['Acordos', 'Carteira fictícia de homologação.'],
-  core: ['Core de acesso', 'Usuários, equipes e permissões.'],
+  relatorios: ['Relatórios', 'Resumo das carteiras fictícias disponíveis.'],
+  core: ['Configurações globais', 'Usuários, equipes e permissões.'],
 };
 
 function show(view, email) {
   const [heading, intro] = views[view];
   title.textContent = heading;
   description.textContent = email || intro;
-  const signedIn = view === 'logout' || view === 'core' || operationViews.includes(view);
+  const signedIn = view === 'logout' || view === 'core' || homeViews.includes(view);
   forms.forEach((form) => { form.hidden = form.id === 'logout' ? !signedIn : form.id !== view; });
   shell.classList.toggle('workspace', signedIn);
   home.hidden = view !== 'logout';
   corePanel.hidden = view !== 'core';
+  settingsButton.hidden = !signedIn || !allowed.has('core');
+  if (view === 'core') settingsButton.setAttribute('aria-current', 'true');
+  else settingsButton.removeAttribute('aria-current');
+  reports.hidden = view !== 'relatorios';
+  if (reports.hidden) reportRequest?.abort();
   operationPanel.hidden = !operationViews.includes(view);
   announce('');
 }
@@ -68,6 +81,7 @@ async function openResource(view, unit) {
   if (view !== 'logout' && !allowed.has(view)) return;
   show(view);
   if (view === 'core') await core.open();
+  if (view === 'relatorios') await loadReports();
   if (operationViews.includes(view)) await operation.open(view, unit, allowed);
 }
 
@@ -75,16 +89,55 @@ document.querySelectorAll('[data-operation-view]').forEach((button) => {
   button.addEventListener('click', () => openResource(button.dataset.operationView));
 });
 
-document.querySelector('#back-home').addEventListener('click', () => show('logout'));
+settingsButton.addEventListener('click', () => openResource('core'));
+
+async function loadReports() {
+  reportRequest?.abort();
+  reportRequest = new AbortController();
+  const { signal } = reportRequest;
+  reportMetrics.hidden = true;
+  reportStatus.textContent = 'Carregando relatório…';
+  try {
+    const { data } = await request('demo-reports', undefined, signal);
+    if (signal.aborted) return;
+    if (!data.wallets) {
+      reportStatus.textContent = 'Nenhuma carteira de homologação está disponível.';
+      return;
+    }
+    const metrics = [
+      ['Cotas em aberto', String(data.open_charges)],
+      ['Valor em aberto', money.format(data.open_cents / 100)],
+      ['Acordos ativos', String(data.active_agreements)],
+      ['Acordos quitados', String(data.settled_agreements)],
+    ];
+    reportMetrics.replaceChildren(...metrics.map(([label, value]) => {
+      const item = document.createElement('div');
+      item.className = 'core-card report-metric';
+      const term = document.createElement('dt');
+      const definition = document.createElement('dd');
+      term.textContent = label;
+      definition.textContent = value;
+      item.append(term, definition);
+      return item;
+    }));
+    reportStatus.textContent = '';
+    reportMetrics.hidden = false;
+  } catch (error) {
+    if (signal.aborted) return;
+    reportStatus.textContent = '';
+    announce(error.message, true);
+  }
+}
 
 function renderHome(session) {
   const cards = document.querySelector('#resource-cards');
-  const resources = session.resources.filter((resource) => resource.code === 'core' || operationViews.includes(resource.code));
-  allowed = new Set(resources.map((resource) => resource.code));
+  const resources = new Map(session.resources.map((resource) => [resource.code, resource]));
+  allowed = new Set(resources.keys());
   document.querySelectorAll('[data-operation-view]').forEach((button) => {
     button.hidden = button.dataset.operationView !== 'logout' && !allowed.has(button.dataset.operationView);
   });
-  cards.replaceChildren(...resources.map((resource) => {
+  cards.replaceChildren(...homeViews.filter((code) => resources.has(code)).map((code) => {
+    const resource = resources.get(code);
     const button = document.createElement('button');
     button.type = 'button';
     button.className = 'module-card';

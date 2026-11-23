@@ -171,7 +171,7 @@ button.text-button:hover { background: var(--blue-light); }
 
 .module-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr)); gap: 1rem; }
 .module-card, .core-card { background: var(--surface); border: 1px solid var(--surface-border); border-radius: .85rem; }
-.module-card { text-align: left; color: var(--heading); padding: 1.15rem; }
+.module-card { display: grid; align-content: start; text-align: left; color: var(--heading); padding: 1.15rem; }
 .module-card:hover { background: var(--blue-light); border-color: var(--wave-blue); }
 .module-card strong { font-family: var(--font-heading); }
 .module-card span { display: block; color: var(--text); margin-top: .25rem; font-weight: 500; }
@@ -207,3 +207,20 @@ label.checkbox { display: flex; min-height: 44px; align-items: center; gap: .55r
 .operation-list { display: grid; gap: .6rem; padding-left: 1.2rem; margin: .3rem 0; overflow-wrap: anywhere; }
 .operation-form { margin-block: .4rem; gap: .55rem; }
 .operation-list summary { padding-block: .65rem; color: var(--primary-hover); cursor: pointer; }
+
+.header-actions { display: flex; align-items: center; gap: .5rem; flex: none; }
+button.settings-button {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  min-height: 44px;
+  padding: 0;
+  color: var(--primary-hover);
+  background: transparent;
+}
+.settings-button span { font-size: 1.2rem; line-height: 1; }
+button.settings-button:hover, button.settings-button[aria-current] { background: var(--lilac); }
+button.back-home { width: auto; }
+.module-card { min-height: 7rem; }
+.report-metric dt { font-weight: 700; }
+.report-metric dd { margin: .45rem 0 0; color: var(--primary-hover); font: 750 1.4rem/1.2 var(--font-heading); }

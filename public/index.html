@@ -15,9 +15,15 @@
         <img src="/assets/brand/gkli-assinatura.jpg" alt="GKLI — Cobrança inteligente" width="724" height="280">
         <span class="product">NewCore</span>
       </div>
-      <form id="logout" class="logout" hidden>
-        <button type="submit" class="secondary">Sair</button>
-      </form>
+      <div class="header-actions">
+        <form id="logout" class="logout" hidden>
+          <button type="submit" class="secondary">Sair</button>
+        </form>
+        <button type="button" id="global-settings" class="settings-button"
+          aria-label="Configurações globais" aria-controls="core" title="Configurações globais" hidden>
+          <span aria-hidden="true">⚙</span>
+        </button>
+      </div>
     </header>
     <div class="brand-waves" aria-hidden="true">
       <span class="wave-blue"></span>
@@ -60,8 +66,8 @@
           <div id="resource-cards" class="module-grid"></div>
           <p id="no-resources" hidden>Nenhum módulo está disponível para esta conta.</p>
         </section>
-        <section id="core" aria-label="Gestão do acesso" hidden>
-          <button type="button" class="secondary" id="back-home">Voltar ao início</button>
+        <section id="core" aria-label="Configurações globais" hidden>
+          <button type="button" class="secondary back-home" data-operation-view="logout">Voltar ao início</button>
           <div class="core-grid">
             <section aria-labelledby="core-users-title" class="core-card">
               <h2 id="core-users-title">Usuários</h2>
@@ -101,6 +107,7 @@
             <button type="button" class="secondary" data-operation-view="cadastros">Cadastros</button>
             <button type="button" class="secondary" data-operation-view="inbox">Inbox</button>
             <button type="button" class="secondary" data-operation-view="acordos">Acordos</button>
+            <button type="button" class="secondary" data-operation-view="relatorios">Relatórios</button>
           </nav>
           <div class="core-grid">
             <section class="core-card" aria-labelledby="operation-units-title">
@@ -113,6 +120,11 @@
               <div id="operation-detail"></div>
             </section>
           </div>
+        </section>
+        <section id="reports" aria-label="Resumo de cobrança" hidden>
+          <button type="button" class="secondary back-home" data-operation-view="logout">Voltar ao início</button>
+          <p id="report-status" role="status"></p>
+          <dl id="report-metrics" class="module-grid" hidden></dl>
         </section>
         <p id="feedback" role="status" aria-live="polite"></p>
         <noscript><p>Ative o JavaScript para acessar o NewCore.</p></noscript>

@@ -27,6 +27,10 @@ test('login, session, origin validation, logout and PKCE recovery', async (t) =>
       if (options.headers.Authorization !== 'Bearer test-session') return Response.json({}, { status: 403 });
       return Response.json({ resources: [], teams: [] });
     }
+    if (path === '/rest/v1/rpc/gkli_demo_reports') {
+      return Response.json({ wallets: 1, open_charges: 3, open_cents: 332503,
+        active_agreements: 0, settled_agreements: 0 });
+    }
     if (path === '/rest/v1/rpc/gkli_demo_check') return Response.json(body);
     if (path.startsWith('/auth/v1/recover?')) return Response.json({});
     if (path === '/auth/v1/token?grant_type=pkce') return Response.json(session);
@@ -87,6 +91,11 @@ test('login, session, origin validation, logout and PKCE recovery', async (t) =>
   assert.deepEqual(await checked.json(), { data: {
     unit: admin, request_id: null, parts: 3, first_due: null, verified_cents: null, reference: null,
   } });
+
+  assert.equal((await call('demo-reports')).status, 401);
+  const report = await call('demo-reports', undefined, session.split(';')[0]);
+  assert.equal(report.status, 200);
+  assert.equal((await report.json()).data.open_charges, 3);
 
   const recovery = await call('recover', { email });
   assert.equal(recovery.status, 200);
